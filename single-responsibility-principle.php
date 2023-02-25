@@ -5,9 +5,10 @@
  *  - Wikipedia
  */
 
+// Breaching Single Responsibility Principle
+
 namespace Fmo\Solid\Breach;
 
-// Breaching Single Responsibility Principle
 class User {
     public function __construct(private string $email, private string $password)
     {
@@ -36,14 +37,14 @@ class User {
 class UserRepository {
     private array $users = [];
 
-    public function save(User $user): void
-    {
-        $this->users[] = $user;
-    }
-
     public function getUsers(): array
     {
         return $this->users;
+    }
+
+    public function save(User $user): void
+    {
+        $this->users[] = $user;
     }
 
     public function hashPassword(string $password): string
@@ -52,14 +53,21 @@ class UserRepository {
     }
 }
 class Register {
-    public function save(): void
+    private UserRepository $userRepository;
+
+    public function __construct()
     {
-        $email = "example@example.com";
+        $this->userRepository = new UserRepository();
+    }
+    public function __invoke(): void
+    {
+        $email = "";
         $password = "example-pass";
 
-        $userRepository = new UserRepository();
-        $hashedPassword = $userRepository->hashPassword($password);
-        $userRepository->save((new User($email, $hashedPassword)));
+        $hashedPassword = $this->userRepository->hashPassword($password);
+        $this->userRepository->save(
+            (new User($email, $hashedPassword))
+        );
     }
 }
 
@@ -72,14 +80,14 @@ use Fmo\Solid\Breach\User;
 class UserRepository {
     private array $users = [];
 
-    public function save(User $user): void
-    {
-        $this->users[] = $user;
-    }
-
     public function getUsers(): array
     {
         return $this->users;
+    }
+
+    public function save(User $user): void
+    {
+        $this->users[] = $user;
     }
 }
 
@@ -94,13 +102,22 @@ class DefaultHashPassword implements HashPassword  {
     }
 }
 
-class Register {
+class Register
+{
+    private UserRepository $userRepository;
+
+    public function __construct()
+    {
+        $this->userRepository = new UserRepository();
+    }
+
     public function save($email, $password): void
     {
-        $userRepository = new UserRepository();
-        $userRepository->save((new User($email, DefaultHashPassword::hash($password))));
+        $this->userRepository->save(
+            (new User($email, DefaultHashPassword::hash($password)))
+        );
 
-        var_dump($userRepository->getUsers());
+        var_dump($this->userRepository->getUsers());
     }
 }
 
