@@ -58,5 +58,5 @@ class Square extends Rectangle
 $square = new Square;
 $square->setHeight(5);
 $square->setWidth(4);
-echo $square->area();
+echo $square->area()."\n<br />";
 
