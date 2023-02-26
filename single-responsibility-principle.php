@@ -111,7 +111,7 @@ class Register
         $this->userRepository = new UserRepository();
     }
 
-    public function save($email, $password): void
+    public function __invoke($email, $password): void
     {
         $this->userRepository->save(
             (new User($email, DefaultHashPassword::hash($password)))
@@ -121,5 +121,4 @@ class Register
     }
 }
 
-(new Register())
-    ->save("example@example.com", "example-pass");
+(new Register())("example@example.com", "example-pass");

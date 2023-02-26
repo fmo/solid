@@ -9,59 +9,54 @@
 
 namespace Fmo\Solid\Breach;
 
-Class Email
+class Rectangle
 {
-    protected string $subject;
-    protected string $message;
-    protected string $to;
-    protected string $cc;
-    protected string $bcc;
-    public function send(): void
+    protected int $width;
+    protected int $height;
+
+    public function getWidth(): int
     {
-        var_dump('Email');
+        return $this->width;
+    }
+
+    public function setWidth(int $width): void
+    {
+        $this->width = $width;
+    }
+
+    public function getHeight(): int
+    {
+        return $this->height;
+    }
+
+    public function setHeight(int $height): void
+    {
+        $this->height = $height;
+    }
+
+    public function area(): int
+    {
+        return $this->height * $this->width;
     }
 }
 
-Class Sms extends Email
+class Square extends Rectangle
 {
-    protected string $provider;
-
-    public function send(): void
+    public function setHeight(int $value): void
     {
-        var_dump('Sms');
+        $this->width = $value;
+        $this->height = $value;
+    }
+
+    public function setWidth(int $value): void
+    {
+        $this->width = $value;
+        $this->height = $value;
     }
 }
 
-// Fixing Liskov Substitution Principle
+$square = new Square;
+$square->setHeight(5);
+$square->setWidth(4);
+echo $square->area();
 
-namespace Fmo\Solid\Fix;
-
-abstract Class Message
-{
-    protected string $to;
-    protected string $message;
-    abstract function send(): void;
-}
-
-Class Email extends Message
-{
-    protected string $subject;
-    protected string $cc;
-    protected string $bcc;
-    public function send(): void
-    {
-        var_dump('Email');
-    }
-}
-
-Class Sms extends Message
-{
-    protected string $provider;
-
-    public function send(): void
-    {
-        var_dump('Sms');
-    }
-}
-
-(new Sms())->send();

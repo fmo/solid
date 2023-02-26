@@ -103,7 +103,6 @@ interface NotifyInterface
 {
     public function __invoke(string $msg): void;
 }
-
 class NotifyViaEmail implements NotifyInterface
 {
     public function __invoke(string $msg): void
